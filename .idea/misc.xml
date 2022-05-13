@@ -5,6 +5,9 @@
       <map>
         <entry key="..\:/AndroidProjects/kotlinMVVM_notesApp/app/src/main/res/layout/activity_add_note.xml" value="0.264" />
         <entry key="..\:/AndroidProjects/kotlinMVVM_notesApp/app/src/main/res/layout/activity_main.xml" value="0.20471014492753623" />
+        <entry key="app/src/main/res/drawable/ic_baseline_note_add_24.xml" value="0.137" />
+        <entry key="app/src/main/res/layout/activity_add_note.xml" value="0.17753623188405798" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.17753623188405798" />
       </map>
     </option>
   </component>

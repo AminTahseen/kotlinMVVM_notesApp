@@ -10,9 +10,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.KotlinMVVM_notesApp">
-        <activity
-            android:name=".feature_note.presentation.activities.NotesListActivity"
-            android:exported="false" />
+
         <activity
             android:name=".feature_note.presentation.activities.AddNoteActivity"
             android:exported="false" />
