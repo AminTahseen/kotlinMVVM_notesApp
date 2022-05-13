@@ -8,4 +8,6 @@ interface NoteRepository {
     fun getNotes(): Flow<List<Note>>
 
     suspend fun addNote(note: Note)
+
+    suspend fun deleteAllNotes()
 }

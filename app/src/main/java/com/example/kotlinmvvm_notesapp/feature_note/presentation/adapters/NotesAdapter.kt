@@ -8,8 +8,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kotlinmvvm_notesapp.R
 import com.example.kotlinmvvm_notesapp.feature_note.domain.model.Note
+import com.example.kotlinmvvm_notesapp.feature_note.domain.model.NoteDisplay
 
-class NotesAdapter(private val notesList: List<Note>,private val context:Context):
+class NotesAdapter(private val notesList: List<NoteDisplay>,private val context:Context):
 RecyclerView.Adapter<NotesAdapter.NotesAdapterViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotesAdapterViewHolder {

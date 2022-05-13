@@ -1,4 +1,4 @@
-package com.example.kotlinmvvm_notesapp.feature_note.domain.use_cases
+package com.example.kotlinmvvm_notesapp.feature_note.domain.use_cases.local
 
 import com.example.kotlinmvvm_notesapp.feature_note.domain.model.InvalidNoteException
 import com.example.kotlinmvvm_notesapp.feature_note.domain.model.Note
