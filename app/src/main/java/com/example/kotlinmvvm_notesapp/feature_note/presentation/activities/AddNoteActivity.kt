@@ -2,6 +2,8 @@ package com.example.kotlinmvvm_notesapp.feature_note.presentation.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.text.Html
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -41,12 +43,11 @@ class AddNoteActivity : AppCompatActivity() {
         val currentTimestamp = System.currentTimeMillis()
         var obj= Note(
             title = noteTitle,
-            description = noteDesc,
+            description = noteDesc.toString(),
             timestamp = currentTimestamp
         )
-        Log.d("NoteAdd",obj.description)
-//        notesViewModel.addNoteToLocal(obj)
-//        setObservers(view)
+        notesViewModel.addNoteToLocal(obj)
+        setObservers(view)
     }
     private fun linkXML(){
         addButton=findViewById(R.id.addNote)
@@ -69,6 +70,9 @@ class AddNoteActivity : AppCompatActivity() {
                 notesViewModel.message.value.toString(),
                 Snackbar.LENGTH_LONG)
             snack.show()
+            Handler().postDelayed({
+                finish()
+            }, 2000)
         }
     }
     private fun initUI(){

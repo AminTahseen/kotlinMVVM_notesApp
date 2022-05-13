@@ -3,11 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidProjects/kotlinMVVM_notesApp/app/src/main/res/drawable/ic_baseline_note_add_24.xml" value="0.1555" />
+        <entry key="..\:/AndroidProjects/kotlinMVVM_notesApp/app/src/main/res/drawable/ic_baseline_sync_24.xml" value="0.196" />
+        <entry key="..\:/AndroidProjects/kotlinMVVM_notesApp/app/src/main/res/drawable/note_paper.xml" value="0.11" />
         <entry key="..\:/AndroidProjects/kotlinMVVM_notesApp/app/src/main/res/layout/activity_add_note.xml" value="0.264" />
-        <entry key="..\:/AndroidProjects/kotlinMVVM_notesApp/app/src/main/res/layout/activity_main.xml" value="0.20471014492753623" />
-        <entry key="app/src/main/res/drawable/ic_baseline_note_add_24.xml" value="0.137" />
-        <entry key="app/src/main/res/layout/activity_add_note.xml" value="0.17753623188405798" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.17753623188405798" />
+        <entry key="..\:/AndroidProjects/kotlinMVVM_notesApp/app/src/main/res/layout/activity_main.xml" value="0.2" />
+        <entry key="..\:/AndroidProjects/kotlinMVVM_notesApp/app/src/main/res/layout/note_item.xml" value="0.19448946515397084" />
       </map>
     </option>
   </component>
