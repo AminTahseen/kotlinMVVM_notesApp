@@ -4,12 +4,14 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kotlinmvvm_notesapp.R
-import com.example.kotlinmvvm_notesapp.common.ConnectionLiveData
+import com.example.kotlinmvvm_notesapp.common.networkHandler.ConnectivityManager
 import com.example.kotlinmvvm_notesapp.feature_note.data.data_source.remote.dto.toNote
 import com.example.kotlinmvvm_notesapp.feature_note.domain.model.NoteDisplay
 import com.example.kotlinmvvm_notesapp.feature_note.domain.model.toNoteDisplay
@@ -17,6 +19,7 @@ import com.example.kotlinmvvm_notesapp.feature_note.presentation.adapters.NotesA
 import com.example.kotlinmvvm_notesapp.feature_note.presentation.viewmodels.NotesViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
@@ -29,7 +32,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var notesViewModel: NotesViewModel
     private lateinit var notesList:ArrayList<NoteDisplay>
 
-    private lateinit var connectionLiveData : ConnectionLiveData
+    private lateinit var statusStrip:TextView
+
+
+    @Inject
+    lateinit var connectivityManager: ConnectivityManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,26 +62,40 @@ class MainActivity : AppCompatActivity() {
         syncButton.setOnClickListener {
             // if local db is not empty than store local db data
             // to server, clear local db
-
-            connectionLiveData.observe(this) { isConnected ->
+            connectivityManager.checkNetwork.observe(this@MainActivity){ isConnected->
                 if (isConnected) {
+                    statusStrip.visibility= View.GONE
+
+                    //    notesViewModel.storeAllLocalDataToRemote()
                     notesViewModel.deleteAllNotesFromLocal()
                     notesViewModel.getNotesFromRemote()
                     notesViewModel.launchNotes()
-                    Log.d("InternetCheck","Available")
+                    Log.d("InternetCheck", "Available")
                 } else {
+                    statusStrip.visibility= View.VISIBLE
                     notesViewModel.launchNotes()
-                    Log.d("InternetCheck","Not Available")
+                    Log.d("InternetCheck", "Not Available")
                 }
             }
+
         }
+
     }
 
+    override fun onStart() {
+        super.onStart()
+        connectivityManager.registerConnectionObserver(this)
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        connectivityManager.unregisterConnectionObserver(this)
+    }
     private fun initUI(){
         notesViewModel= ViewModelProvider(this@MainActivity)
             .get(NotesViewModel::class.java)
         notesList=ArrayList()
-        connectionLiveData=ConnectionLiveData(application)
     }
     private fun setObservers(){
         if(notesList.size>0){
@@ -102,7 +123,6 @@ class MainActivity : AppCompatActivity() {
 
         notesViewModel.allRemoteItem.observe(this){
             Log.d("RemoteNotes",it.note_title)
-          //  notesViewModel.addNoteToLocal()
             notesViewModel.addNoteToLocal(it.toNote())
         }
     }
@@ -110,6 +130,7 @@ class MainActivity : AppCompatActivity() {
         addButton=findViewById(R.id.btn_add_note)
         syncButton=findViewById(R.id.btn_sync_notes)
         notesRecycler=findViewById(R.id.notes_list)
+        statusStrip=findViewById(R.id.status)
     }
     private fun setNoteRecycler(){
         notesRecycler.layoutManager = GridLayoutManager(this, 2)

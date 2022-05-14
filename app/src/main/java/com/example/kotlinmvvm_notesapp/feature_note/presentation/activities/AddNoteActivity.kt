@@ -3,26 +3,22 @@ package com.example.kotlinmvvm_notesapp.feature_note.presentation.activities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import android.text.Html
 import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.example.kotlinmvvm_notesapp.R
-import com.example.kotlinmvvm_notesapp.common.ConnectionLiveData
+import com.example.kotlinmvvm_notesapp.common.networkHandler.ConnectivityManager
 import com.example.kotlinmvvm_notesapp.feature_note.data.data_source.remote.dto.NotePost
 import com.example.kotlinmvvm_notesapp.feature_note.data.data_source.remote.dto.toNote
-import com.example.kotlinmvvm_notesapp.feature_note.domain.model.Note
-import com.example.kotlinmvvm_notesapp.feature_note.domain.model.toNotePost
-import com.example.kotlinmvvm_notesapp.feature_note.domain.model.toNoteResponseItem
 import com.example.kotlinmvvm_notesapp.feature_note.presentation.viewmodels.NotesViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.yahiaangelo.markdownedittext.MarkdownEditText
 import com.yahiaangelo.markdownedittext.MarkdownStylesBar
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class AddNoteActivity : AppCompatActivity() {
@@ -31,20 +27,37 @@ class AddNoteActivity : AppCompatActivity() {
     private lateinit var noteTitleEditText: EditText
     private lateinit var noteDescEditText: MarkdownEditText
     private lateinit var notesDescEdittextStylesBar: MarkdownStylesBar
-    private lateinit var connectionLiveData : ConnectionLiveData
+    @Inject
+    lateinit var connectivityManager: ConnectivityManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_note)
         linkXML()
         initUI()
-
         addButton.setOnClickListener {
-            validate(it)
+            connectivityManager.checkNetwork.observe(this@AddNoteActivity){ isConnected->
+                if (isConnected) {
+                    Log.d("InsideCheck","internet on")
+                    validate(it,isConnected)
+                }else{
+                    Log.d("InsideCheck","internet off")
+                    validate(it,isConnected)
+                }
+            }
         }
+    }
+    override fun onStart() {
+        super.onStart()
+        connectivityManager.registerConnectionObserver(this)
 
     }
-    private fun validate(view: View){
+
+    override fun onDestroy() {
+        super.onDestroy()
+        connectivityManager.unregisterConnectionObserver(this)
+    }
+    private fun validate(view: View,isConnected:Boolean){
         val noteTitle=noteTitleEditText.text.toString()
         val noteDesc=noteDescEditText.getMD()
         val currentTimestamp = System.currentTimeMillis()
@@ -54,14 +67,12 @@ class AddNoteActivity : AppCompatActivity() {
             note_content = noteDesc,
             note_timestamp = currentTimestamp.toInt()
         )
-        connectionLiveData.observe(this) { isConnected ->
+        setObservers(view)
             if (isConnected) {
                 notesViewModel.addNoteToRemote(obj)
             }else{
                 notesViewModel.addNoteToLocal(obj.toNote())
             }
-        }
-        setObservers(view)
     }
     private fun linkXML(){
         addButton=findViewById(R.id.addNote)
@@ -96,7 +107,5 @@ class AddNoteActivity : AppCompatActivity() {
     private fun initUI(){
         notesViewModel= ViewModelProvider(this@AddNoteActivity)
             .get(NotesViewModel::class.java)
-        connectionLiveData=ConnectionLiveData(application)
-
     }
 }

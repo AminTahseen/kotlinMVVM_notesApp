@@ -5,6 +5,7 @@ import com.example.kotlinmvvm_notesapp.feature_note.data.data_source.remote.dto.
 import com.example.kotlinmvvm_notesapp.feature_note.data.data_source.remote.dto.NotesResponseItem
 import com.example.kotlinmvvm_notesapp.feature_note.domain.model.InvalidNoteException
 import com.example.kotlinmvvm_notesapp.feature_note.domain.model.Note
+import com.example.kotlinmvvm_notesapp.feature_note.domain.model.toNotePost
 import com.example.kotlinmvvm_notesapp.feature_note.domain.use_cases.local.NoteUseCases
 import com.example.kotlinmvvm_notesapp.feature_note.domain.use_cases.remote.RemoteNoteUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -89,15 +90,17 @@ class NotesViewModel @Inject constructor(
             noteUseCases.deleteAllNotes()
         }
     }
-    fun storeAllLocalDataToRemote(localNote:List<NotePost>){
+    fun storeAllLocalDataToRemote(){
             viewModelScope.launch {
-                localNote.iterator().forEach {
-                    try {
-                        loading.value=true
-                        notesFromRemoteUseCase.postNoteToRemoteUseCase(it)
-                    } catch (e: InvalidNoteException) {
-                        message.value = e.message
-                        loading.value=false
+                noteUseCases.getNotesUseCase().collect {
+                    it.iterator().forEach {localNote->
+                        try {
+                            loading.value=true
+                            notesFromRemoteUseCase.postNoteToRemoteUseCase(localNote.toNotePost())
+                        } catch (e: InvalidNoteException) {
+                            message.value = e.message
+                            loading.value=false
+                        }
                     }
                 }
                 loading.value=false

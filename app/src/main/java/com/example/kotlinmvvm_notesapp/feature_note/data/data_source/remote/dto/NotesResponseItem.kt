@@ -27,4 +27,3 @@ fun NotesResponseItem.toNote():Note{
         timestamp = note_timestamp.toLong(),
     )
 }
-class InvalidNoteException(message:String): Exception(message)
