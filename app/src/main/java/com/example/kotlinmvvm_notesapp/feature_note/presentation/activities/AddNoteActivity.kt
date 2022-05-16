@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import com.example.kotlinmvvm_notesapp.R
 import com.example.kotlinmvvm_notesapp.common.networkHandler.ConnectivityManager
@@ -27,6 +28,8 @@ class AddNoteActivity : AppCompatActivity() {
     private lateinit var noteTitleEditText: EditText
     private lateinit var noteDescEditText: MarkdownEditText
     private lateinit var notesDescEdittextStylesBar: MarkdownStylesBar
+    private lateinit var statusStrip: TextView
+
     @Inject
     lateinit var connectivityManager: ConnectivityManager
 
@@ -40,7 +43,9 @@ class AddNoteActivity : AppCompatActivity() {
                 if (isConnected) {
                     Log.d("InsideCheck","internet on")
                     validate(it,isConnected)
+                    statusStrip.visibility=View.INVISIBLE
                 }else{
+                    statusStrip.visibility=View.VISIBLE
                     Log.d("InsideCheck","internet off")
                     validate(it,isConnected)
                 }
@@ -79,6 +84,7 @@ class AddNoteActivity : AppCompatActivity() {
         noteTitleEditText=findViewById(R.id.noteTitle)
         noteDescEditText=findViewById(R.id.notesDecMarkdown)
         notesDescEdittextStylesBar=findViewById(R.id.stylesbar)
+        statusStrip=findViewById(R.id.status)
        notesDescEdittextStylesBar.stylesList =
            arrayOf(MarkdownEditText.TextStyle.BOLD,
                MarkdownEditText.TextStyle.ITALIC,
